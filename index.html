@@ -3,11 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Vertikalkraft-Kalkulator v1.0</title>
+    <title>Vertikalkraft v2.0</title>
     <meta name="author" content="Opphavsrett 2026 - vestmyra16">
-    
     <script src="https://cdn.tailwindcss.com"></script>
-
     <style>
         body { -webkit-user-select: none; user-select: none; background-color: #f1f5f9; }
         touch-action: manipulation;
@@ -18,38 +16,41 @@
     <div class="max-w-md mx-auto px-3 py-4">
         
         <header class="bg-sky-900 text-white p-5 rounded-t-xl shadow-md text-center">
-            <h1 class="text-xl font-black tracking-wide text-sky-300">VERTIKALKRAFT v1.0</h1>
-            <p class="text-xs text-sky-100 mt-1 uppercase font-bold tracking-wider">Trigonometrisk feltmåling fra bakken</p>
+            <h1 class="text-xl font-black tracking-wide text-sky-300">VERTIKALKRAFT v2.0</h1>
+            <p class="text-xs text-sky-100 mt-1 uppercase font-bold tracking-wider">Trigonometrisk feltmåling</p>
         </header>
 
         <main class="bg-white p-4 rounded-b-xl shadow-md border-x border-b border-slate-200 space-y-5">
             
-            <section class="bg-sky-50 p-3 rounded-lg border border-sky-200 text-slate-700">
-                <h3 class="text-xs font-black uppercase text-sky-900 mb-1 flex items-center gap-1">
-                    📖 Metodebeskrivelse: Måling fra bakken
-                </h3>
-                <ol class="text-[11px] space-y-1.5 list-decimal pl-4 font-medium leading-relaxed">
-                    <li>Still deg på bakken, enten rett under opphengspunktet eller vinkelrett på linjespennet.</li>
-                    <li>Hold vinkelmålerens basisarm **helt horisontalt (i vater)**.</li>
-                    <li>Sikt med den bevegelige armen langs kraftlina, helt inne ved isolatoropphenget der vinkelen er størst.</li>
-                    <li>Les av lina sin avviksvinkel (<span class="font-bold">θ</span>) i grader direkte på verktøyet.</li>
-                </ol>
-                <div class="mt-2 text-[10px] text-sky-800 bg-white/60 p-1.5 rounded border border-sky-100 font-bold italic">
-                    Trigonometrisk prinsipp: Vertikalkraften (V) er den maksimale strekkraften (R₃) multiplisert med Sinus til vinkelen: <span class="text-sky-950 not-italic font-black">V = R₃ × sin(θ)</span>.
-                </div>
+            <section id="resultat-panel" class="p-4 rounded-lg bg-slate-50 border border-slate-300 text-center space-y-1 shadow-inner transition-colors duration-300">
+                <span class="block text-[10px] font-black uppercase text-slate-500 tracking-wider">Dimensjonerende Vertikalkraft (V)</span>
+                <div id="resKN" class="text-4xl font-black text-slate-800">0.00 kN</div>
+                <div id="resKG" class="text-sm font-bold text-slate-500">~ 0 kg trykk</div>
             </section>
 
-            <section id="resultat-panel" class="p-4 rounded-lg bg-slate-50 border border-slate-300 text-center space-y-1 shadow-inner">
-                <span class="block text-[10px] font-black uppercase text-slate-500 tracking-wider">Kalkulert Vertikalkraft (V)</span>
-                <div id="resKN" class="text-3xl font-black text-slate-800">0.00 kN</div>
-                <div id="resKG" class="text-sm font-bold text-slate-500">~ 0 kg</div>
-            </section>
-
-            <section class="space-y-4">
+            <section class="space-y-5">
                 
+                <div class="bg-slate-50 p-3 rounded border border-slate-200">
+                    <label class="block text-[11px] font-black uppercase text-sky-900 mb-2">1. Hva slags mast ser du på?</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <label class="flex flex-col items-center justify-center p-3 border-2 border-slate-200 rounded-lg cursor-pointer hover:bg-sky-50 has-[:checked]:border-sky-600 has-[:checked]:bg-sky-50 transition-all text-center">
+                            <input type="radio" name="situasjon" value="to_spenn" class="sr-only" checked onchange="kalkulerVertikal()">
+                            <span class="text-lg mb-1">↔️</span>
+                            <span class="text-[10px] font-bold text-slate-700">Bæremast / Avspenning</span>
+                            <span class="text-[8px] text-slate-500 mt-1">Linje i to retninger</span>
+                        </label>
+                        <label class="flex flex-col items-center justify-center p-3 border-2 border-slate-200 rounded-lg cursor-pointer hover:bg-sky-50 has-[:checked]:border-sky-600 has-[:checked]:bg-sky-50 transition-all text-center">
+                            <input type="radio" name="situasjon" value="ett_spenn" class="sr-only" onchange="kalkulerVertikal()">
+                            <span class="text-lg mb-1">➡️</span>
+                            <span class="text-[10px] font-bold text-slate-700">Endestrekk</span>
+                            <span class="text-[8px] text-slate-500 mt-1">Linje fra kun én retning</span>
+                        </label>
+                    </div>
+                </div>
+
                 <div>
-                    <label class="block text-xs font-black uppercase text-slate-700 mb-1">1. Velg Linetype (Maks strekkraft R₃)</label>
-                    <select id="linetype" onchange="haandterLinetype()" class="w-full p-3 border border-slate-300 rounded-lg text-sm font-bold bg-slate-50 focus:border-sky-500 focus:ring-sky-500">
+                    <label class="block text-[11px] font-black uppercase text-sky-900 mb-1">2. Linetype (Maks strekkraft)</label>
+                    <select id="linetype" onchange="haandterLinetype()" class="w-full p-3 border border-slate-300 rounded text-sm font-bold bg-white focus:border-sky-500 focus:ring-sky-500 shadow-sm">
                         <option value="" data-r3="0">-- Velg linetype --</option>
                         <optgroup label="Standard FeAl-liner">
                             <option value="25-6/1" data-r3="2.84">FeAl 25 6/1 (2.84 kN)</option>
@@ -62,27 +63,24 @@
                             <option value="240-26/7" data-r3="25.90">FeAl 240 26/7 (25.90 kN)</option>
                             <option value="300" data-r3="32.50">FeAl 300 (32.50 kN)</option>
                         </optgroup>
-                        <option value="egen" data-r3="custom">✏️ Egendefinert verdi...</option>
+                        <option value="egen" data-r3="custom">✏️ Egendefinert verdi (kN)...</option>
                     </select>
                 </div>
 
-                <div id="custom-r3-div" class="hidden bg-slate-50 p-3 rounded-lg border border-slate-200">
-                    <label class="block text-xs font-black uppercase text-slate-700 mb-1">Skriv inn mekanisk strekkraft R₃ (kN)</label>
-                    <input type="number" id="custom_r3" oninput="kalkulerVertikal()" placeholder="F.eks. 15.5" class="w-full p-2 border border-slate-300 rounded text-sm text-center font-bold">
+                <div id="custom-r3-div" class="hidden bg-slate-50 p-3 rounded border border-slate-200">
+                    <label class="block text-[10px] font-black uppercase text-slate-700 mb-1">Skriv inn mekanisk strekkraft R₃ (kN)</label>
+                    <input type="number" id="custom_r3" oninput="kalkulerVertikal()" placeholder="F.eks. 15.5" class="w-full p-2 border border-slate-300 rounded text-sm text-center font-bold shadow-inner">
                 </div>
 
                 <div>
-                    <label class="block text-xs font-black uppercase text-slate-700 mb-1">2. Avlest vinkel på lina (θ i grader)</label>
+                    <label class="block text-[11px] font-black uppercase text-sky-900 mb-1">3. Avlest vinkel (Grader °)</label>
                     <div class="relative flex items-center">
-                        <input type="number" id="vinkel" step="0.1" min="0" max="90" oninput="kalkulerVertikal()" placeholder="Tast inn målt vinkel" class="w-full p-3 border border-slate-300 rounded-lg text-base text-center font-black text-sky-950 bg-sky-50/50 focus:border-sky-500 focus:ring-sky-500">
-                        <span class="absolute right-4 font-black text-lg text-slate-400">°</span>
+                        <input type="number" id="vinkel" step="0.1" min="0" max="180" oninput="kalkulerVertikal()" placeholder="F.eks. 170 eller 10" class="w-full p-4 border border-slate-300 rounded-lg text-xl text-center font-black text-sky-950 bg-sky-50 focus:border-sky-500 focus:ring-sky-500 shadow-inner">
+                        <span class="absolute right-5 font-black text-2xl text-slate-400">°</span>
                     </div>
+                    <p class="text-[9px] text-slate-500 mt-1 italic text-center">Appen forstår både spisse vinkler (10°) og flate vinkler (170°).</p>
                 </div>
 
-            </section>
-
-            <section class="text-[10px] text-slate-400 border-t pt-3 text-center">
-                © 2026 E.T. og Sprekkanalyse | 1 kN ≈ 102 kg bøyepåkjenning.
             </section>
 
         </main>
@@ -112,31 +110,40 @@
                 r3 = parseFloat(select.options[select.selectedIndex]?.getAttribute('data-r3') || 0);
             }
 
-            const vinkelGrader = parseFloat(document.getElementById('vinkel').value) || 0;
-
+            const avlestVinkel = parseFloat(document.getElementById('vinkel').value) || 0;
             const resKN = document.getElementById('resKN');
             const resKG = document.getElementById('resKG');
             const panel = document.getElementById('resultat-panel');
 
-            // Hvis mangelfulle data, nullstill display
-            if (r3 === 0 || vinkelGrader === 0) {
+            if (r3 === 0 || avlestVinkel === 0) {
                 resKN.innerText = "0.00 kN";
-                resKG.innerText = "~ 0 kg";
-                panel.className = "p-4 rounded-lg bg-slate-50 border border-slate-300 text-center space-y-1 shadow-inner";
+                resKG.innerText = "~ 0 kg trykk";
+                panel.className = "p-4 rounded-lg bg-slate-50 border border-slate-300 text-center space-y-1 shadow-inner transition-colors duration-300";
                 return;
             }
 
-            // Trigonometrisk beregning: V = R3 * sin(vinkel i radianer)
-            const vinkelRadianer = vinkelGrader * Math.PI / 180;
-            const vertikalKraft = r3 * Math.sin(vinkelRadianer);
-            const vertikalKG = vertikalKraft * 101.9716; // Omregningsfaktor fra kN til kg
+            // Finn selve "knekken" i linja uansett hva montøren taster inn (f.eks 170 -> 10, 10 -> 10)
+            let knekkVinkel = avlestVinkel > 90 ? 180 - avlestVinkel : avlestVinkel;
+            let vertikalKraft = 0;
 
-            // Oppdater skjermtekst
+            // Sjekk hvilken maste-situasjon som er valgt
+            const situasjon = document.querySelector('input[name="situasjon"]:checked').value;
+
+            if (situasjon === 'to_spenn') {
+                // Bæremast/Avspenning: Knekken fordeles på to spenn. Nedtrekk = 2 * R3 * sin(knekk / 2)
+                let vinkelPerSpennRadianer = (knekkVinkel / 2) * Math.PI / 180;
+                vertikalKraft = 2 * r3 * Math.sin(vinkelPerSpennRadianer);
+            } else {
+                // Endestrekk: Hele knekken skjer i ett spenn. Nedtrekk = R3 * sin(knekk)
+                let vinkelRadianer = knekkVinkel * Math.PI / 180;
+                vertikalKraft = r3 * Math.sin(vinkelRadianer);
+            }
+
+            const vertikalKG = vertikalKraft * 101.9716;
+
             resKN.innerText = vertikalKraft.toFixed(2) + " kN";
-            resKG.innerText = "~ " + Math.round(vertikalKG) + " kg trykkbelastning";
-
-            // Gi panelet en fin, aktiv blåfarge når beregning er aktiv
-            panel.className = "p-4 rounded-lg bg-sky-50 border-2 border-sky-300 text-center space-y-1 shadow-sm";
+            resKG.innerText = "~ " + Math.round(vertikalKG) + " kg trykk";
+            panel.className = "p-4 rounded-lg bg-sky-100 border-2 border-sky-400 text-center space-y-1 shadow-sm transition-colors duration-300";
         }
     </script>
 </body>

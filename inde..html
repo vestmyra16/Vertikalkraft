@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Vertikalkraft-Kalkulator v1.0</title>
+    <meta name="author" content="Opphavsrett 2026 - vestmyra16">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body { -webkit-user-select: none; user-select: none; background-color: #f1f5f9; }
+        touch-action: manipulation;
+    </style>
+</head>
+<body class="bg-slate-100 pb-10">
+
+    <div class="max-w-md mx-auto px-3 py-4">
+        
+        <header class="bg-sky-900 text-white p-5 rounded-t-xl shadow-md text-center">
+            <h1 class="text-xl font-black tracking-wide text-sky-300">VERTIKALKRAFT v1.0</h1>
+            <p class="text-xs text-sky-100 mt-1 uppercase font-bold tracking-wider">Trigonometrisk feltmåling fra bakken</p>
+        </header>
+
+        <main class="bg-white p-4 rounded-b-xl shadow-md border-x border-b border-slate-200 space-y-5">
+            
+            <section class="bg-sky-50 p-3 rounded-lg border border-sky-200 text-slate-700">
+                <h3 class="text-xs font-black uppercase text-sky-900 mb-1 flex items-center gap-1">
+                    📖 Metodebeskrivelse: Måling fra bakken
+                </h3>
+                <ol class="text-[11px] space-y-1.5 list-decimal pl-4 font-medium leading-relaxed">
+                    <li>Still deg på bakken, enten rett under opphengspunktet eller vinkelrett på linjespennet.</li>
+                    <li>Hold vinkelmålerens basisarm **helt horisontalt (i vater)**.</li>
+                    <li>Sikt med den bevegelige armen langs kraftlina, helt inne ved isolatoropphenget der vinkelen er størst.</li>
+                    <li>Les av lina sin avviksvinkel (<span class="font-bold">θ</span>) i grader direkte på verktøyet.</li>
+                </ol>
+                <div class="mt-2 text-[10px] text-sky-800 bg-white/60 p-1.5 rounded border border-sky-100 font-bold italic">
+                    Trigonometrisk prinsipp: Vertikalkraften (V) er den maksimale strekkraften (R₃) multiplisert med Sinus til vinkelen: <span class="text-sky-950 not-italic font-black">V = R₃ × sin(θ)</span>.
+                </div>
+            </section>
+
+            <section id="resultat-panel" class="p-4 rounded-lg bg-slate-50 border border-slate-300 text-center space-y-1 shadow-inner">
+                <span class="block text-[10px] font-black uppercase text-slate-500 tracking-wider">Kalkulert Vertikalkraft (V)</span>
+                <div id="resKN" class="text-3xl font-black text-slate-800">0.00 kN</div>
+                <div id="resKG" class="text-sm font-bold text-slate-500">~ 0 kg</div>
+            </section>
+
+            <section class="space-y-4">
+                
+                <div>
+                    <label class="block text-xs font-black uppercase text-slate-700 mb-1">1. Velg Linetype (Maks strekkraft R₃)</label>
+                    <select id="linetype" onchange="haandterLinetype()" class="w-full p-3 border border-slate-300 rounded-lg text-sm font-bold bg-slate-50 focus:border-sky-500 focus:ring-sky-500">
+                        <option value="" data-r3="0">-- Velg linetype --</option>
+                        <optgroup label="Standard FeAl-liner">
+                            <option value="25-6/1" data-r3="2.84">FeAl 25 6/1 (2.84 kN)</option>
+                            <option value="50-6/1" data-r3="5.46">FeAl 50 6/1 (5.46 kN)</option>
+                            <option value="70-6/1" data-r3="7.80">FeAl 70 6/1 (7.80 kN)</option>
+                            <option value="95-26/7" data-r3="11.00">FeAl 95 26/7 (11.00 kN)</option>
+                            <option value="120-22/7" data-r3="13.80">FeAl 120 22/7 (13.80 kN)</option>
+                            <option value="150-22/7" data-r3="16.50">FeAl 150 22/7 (16.50 kN)</option>
+                            <option value="150+-26/7" data-r3="17.20">FeAl 150+ 26/7 (17.20 kN)</option>
+                            <option value="240-26/7" data-r3="25.90">FeAl 240 26/7 (25.90 kN)</option>
+                            <option value="300" data-r3="32.50">FeAl 300 (32.50 kN)</option>
+                        </optgroup>
+                        <option value="egen" data-r3="custom">✏️ Egendefinert verdi...</option>
+                    </select>
+                </div>
+
+                <div id="custom-r3-div" class="hidden bg-slate-50 p-3 rounded-lg border border-slate-200">
+                    <label class="block text-xs font-black uppercase text-slate-700 mb-1">Skriv inn mekanisk strekkraft R₃ (kN)</label>
+                    <input type="number" id="custom_r3" oninput="kalkulerVertikal()" placeholder="F.eks. 15.5" class="w-full p-2 border border-slate-300 rounded text-sm text-center font-bold">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-black uppercase text-slate-700 mb-1">2. Avlest vinkel på lina (θ i grader)</label>
+                    <div class="relative flex items-center">
+                        <input type="number" id="vinkel" step="0.1" min="0" max="90" oninput="kalkulerVertikal()" placeholder="Tast inn målt vinkel" class="w-full p-3 border border-slate-300 rounded-lg text-base text-center font-black text-sky-950 bg-sky-50/50 focus:border-sky-500 focus:ring-sky-500">
+                        <span class="absolute right-4 font-black text-lg text-slate-400">°</span>
+                    </div>
+                </div>
+
+            </section>
+
+            <section class="text-[10px] text-slate-400 border-t pt-3 text-center">
+                © 2026 E.T. og Sprekkanalyse | 1 kN ≈ 102 kg bøyepåkjenning.
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        function haandterLinetype() {
+            const select = document.getElementById('linetype');
+            const customDiv = document.getElementById('custom-r3-div');
+            
+            if (select.value === 'egen') {
+                customDiv.classList.remove('hidden');
+            } else {
+                customDiv.classList.add('hidden');
+                document.getElementById('custom_r3').value = '';
+            }
+            kalkulerVertikal();
+        }
+
+        function kalkulerVertikal() {
+            const select = document.getElementById('linetype');
+            let r3 = 0;
+
+            if (select.value === 'egen') {
+                r3 = parseFloat(document.getElementById('custom_r3').value) || 0;
+            } else {
+                r3 = parseFloat(select.options[select.selectedIndex]?.getAttribute('data-r3') || 0);
+            }
+
+            const vinkelGrader = parseFloat(document.getElementById('vinkel').value) || 0;
+
+            const resKN = document.getElementById('resKN');
+            const resKG = document.getElementById('resKG');
+            const panel = document.getElementById('resultat-panel');
+
+            // Hvis mangelfulle data, nullstill display
+            if (r3 === 0 || vinkelGrader === 0) {
+                resKN.innerText = "0.00 kN";
+                resKG.innerText = "~ 0 kg";
+                panel.className = "p-4 rounded-lg bg-slate-50 border border-slate-300 text-center space-y-1 shadow-inner";
+                return;
+            }
+
+            // Trigonometrisk beregning: V = R3 * sin(vinkel i radianer)
+            const vinkelRadianer = vinkelGrader * Math.PI / 180;
+            const vertikalKraft = r3 * Math.sin(vinkelRadianer);
+            const vertikalKG = vertikalKraft * 101.9716; // Omregningsfaktor fra kN til kg
+
+            // Oppdater skjermtekst
+            resKN.innerText = vertikalKraft.toFixed(2) + " kN";
+            resKG.innerText = "~ " + Math.round(vertikalKG) + " kg trykkbelastning";
+
+            // Gi panelet en fin, aktiv blåfarge når beregning er aktiv
+            panel.className = "p-4 rounded-lg bg-sky-50 border-2 border-sky-300 text-center space-y-1 shadow-sm";
+        }
+    </script>
+</body>
+</html>

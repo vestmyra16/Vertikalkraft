@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Vertikalkraft v2.0</title>
+    <title>Vertikalkraft v3.0</title>
     <meta name="author" content="Opphavsrett 2026 - vestmyra16">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -16,16 +16,42 @@
     <div class="max-w-md mx-auto px-3 py-4">
         
         <header class="bg-sky-900 text-white p-5 rounded-t-xl shadow-md text-center">
-            <h1 class="text-xl font-black tracking-wide text-sky-300">VERTIKALKRAFT v2.0</h1>
-            <p class="text-xs text-sky-100 mt-1 uppercase font-bold tracking-wider">Trigonometrisk feltmåling</p>
+            <h1 class="text-xl font-black tracking-wide text-sky-300">VERTIKALKRAFT v3.0</h1>
+            <p class="text-xs text-sky-100 mt-1 uppercase font-bold tracking-wider">Feltmåling av linetrekk</p>
         </header>
 
         <main class="bg-white p-4 rounded-b-xl shadow-md border-x border-b border-slate-200 space-y-5">
             
+            <details class="bg-sky-50 p-3 rounded-lg border border-sky-200 text-slate-700 open" open>
+                <summary class="text-xs font-black uppercase text-sky-900 flex items-center gap-1 cursor-pointer outline-none hover:text-sky-700">
+                    ℹ️ Metodebeskrivelse & Veiledning
+                </summary>
+                <div class="mt-3 text-[11px] space-y-3 leading-relaxed border-t border-sky-200 pt-3">
+                    <div id="veiledning-vinkel">
+                        <strong class="text-sky-950 block mb-1">Måling med Vinkelmåler (Grader):</strong>
+                        <ul class="list-disc pl-4 space-y-1">
+                            <li><span class="font-bold">Bæremast (2 spenn):</span> Sikt langs begge linjene med verktøyet. Tast inn vinkelen du leser av (f.eks. 165° eller 15°).</li>
+                            <li><span class="font-bold">Endestrekk (1 spenn):</span> Hold den ene armen i vater, sikt den andre langs linja, og tast inn vinkelen.</li>
+                        </ul>
+                    </div>
+                    <div id="veiledning-tommestokk" class="hidden">
+                        <strong class="text-sky-950 block mb-1">Måling med Tommestokkmetoden (cm):</strong>
+                        <ul class="list-disc pl-4 space-y-1">
+                            <li><span class="font-bold">Armlengde (S3):</span> Bruk to legg i tommestokken (Default: 15 cm). Legg denne i knekken på linja.</li>
+                            <li><span class="font-bold">Diagonal (D):</span> Bruk et målebånd/tommestokk 2 for å måle åpningen (diagonalen) mellom de to S3-tuppene.</li>
+                            <li>For endestrekk: Hold det ene S3-legget i vater og det andre langs lina.</li>
+                        </ul>
+                    </div>
+                    <p class="italic text-sky-800 bg-white/60 p-2 rounded border border-sky-100 mt-2">
+                        💡 Husk: Selv en line som ser slakk ut, skaper et voldsomt vertikalt trykk fordi montasjestrekket (R3) ofte er flere tonn.
+                    </p>
+                </div>
+            </details>
+
             <section id="resultat-panel" class="p-4 rounded-lg bg-slate-50 border border-slate-300 text-center space-y-1 shadow-inner transition-colors duration-300">
                 <span class="block text-[10px] font-black uppercase text-slate-500 tracking-wider">Dimensjonerende Vertikalkraft (V)</span>
                 <div id="resKN" class="text-4xl font-black text-slate-800">0.00 kN</div>
-                <div id="resKG" class="text-sm font-bold text-slate-500">~ 0 kg trykk</div>
+                <div id="resKG" class="text-sm font-bold text-slate-500">~ 0 kg trykk i masta</div>
             </section>
 
             <section class="space-y-5">
@@ -33,13 +59,13 @@
                 <div class="bg-slate-50 p-3 rounded border border-slate-200">
                     <label class="block text-[11px] font-black uppercase text-sky-900 mb-2">1. Hva slags mast ser du på?</label>
                     <div class="grid grid-cols-2 gap-2">
-                        <label class="flex flex-col items-center justify-center p-3 border-2 border-slate-200 rounded-lg cursor-pointer hover:bg-sky-50 has-[:checked]:border-sky-600 has-[:checked]:bg-sky-50 transition-all text-center">
+                        <label class="flex flex-col items-center justify-center p-3 border-2 border-slate-200 rounded-lg cursor-pointer hover:bg-sky-50 has-[:checked]:border-sky-600 has-[:checked]:bg-sky-50 transition-all text-center bg-white">
                             <input type="radio" name="situasjon" value="to_spenn" class="sr-only" checked onchange="kalkulerVertikal()">
                             <span class="text-lg mb-1">↔️</span>
                             <span class="text-[10px] font-bold text-slate-700">Bæremast / Avspenning</span>
                             <span class="text-[8px] text-slate-500 mt-1">Linje i to retninger</span>
                         </label>
-                        <label class="flex flex-col items-center justify-center p-3 border-2 border-slate-200 rounded-lg cursor-pointer hover:bg-sky-50 has-[:checked]:border-sky-600 has-[:checked]:bg-sky-50 transition-all text-center">
+                        <label class="flex flex-col items-center justify-center p-3 border-2 border-slate-200 rounded-lg cursor-pointer hover:bg-sky-50 has-[:checked]:border-sky-600 has-[:checked]:bg-sky-50 transition-all text-center bg-white">
                             <input type="radio" name="situasjon" value="ett_spenn" class="sr-only" onchange="kalkulerVertikal()">
                             <span class="text-lg mb-1">➡️</span>
                             <span class="text-[10px] font-bold text-slate-700">Endestrekk</span>
@@ -51,7 +77,14 @@
                 <div>
                     <label class="block text-[11px] font-black uppercase text-sky-900 mb-1">2. Linetype (Maks strekkraft)</label>
                     <select id="linetype" onchange="haandterLinetype()" class="w-full p-3 border border-slate-300 rounded text-sm font-bold bg-white focus:border-sky-500 focus:ring-sky-500 shadow-sm">
-                        <option value="" data-r3="0">-- Velg linetype --</option>
+                        <option value="" data-r3="0">-- Velg linetype / kabel --</option>
+                        
+                        <optgroup label="EX / EXCEL (Lavspent)">
+                            <option value="EX-25" data-r3="2.28">EX 4x25 / 3x25+25 (2.28 kN)</option>
+                            <option value="EX-50" data-r3="4.56">EX 4x50 / 3x50+50 (4.56 kN)</option>
+                            <option value="EX-95" data-r3="8.68">EX 4x95 / 3x95+95 (8.68 kN)</option>
+                        </optgroup>
+
                         <optgroup label="Standard FeAl-liner">
                             <option value="25-6/1" data-r3="2.84">FeAl 25 6/1 (2.84 kN)</option>
                             <option value="50-6/1" data-r3="5.46">FeAl 50 6/1 (5.46 kN)</option>
@@ -63,7 +96,8 @@
                             <option value="240-26/7" data-r3="25.90">FeAl 240 26/7 (25.90 kN)</option>
                             <option value="300" data-r3="32.50">FeAl 300 (32.50 kN)</option>
                         </optgroup>
-                        <option value="egen" data-r3="custom">✏️ Egendefinert verdi (kN)...</option>
+                        
+                        <option value="egen" data-r3="custom">✏️ Egendefinert brudd/strekk (kN)...</option>
                     </select>
                 </div>
 
@@ -72,13 +106,47 @@
                     <input type="number" id="custom_r3" oninput="kalkulerVertikal()" placeholder="F.eks. 15.5" class="w-full p-2 border border-slate-300 rounded text-sm text-center font-bold shadow-inner">
                 </div>
 
-                <div>
-                    <label class="block text-[11px] font-black uppercase text-sky-900 mb-1">3. Avlest vinkel (Grader °)</label>
+                <div class="bg-slate-50 p-3 rounded border border-slate-200">
+                    <label class="block text-[11px] font-black uppercase text-sky-900 mb-2">3. Velg målemetode</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <label class="flex items-center justify-center p-2 border-2 border-slate-200 rounded-lg cursor-pointer hover:bg-sky-50 has-[:checked]:border-sky-600 has-[:checked]:bg-sky-50 transition-all text-center bg-white">
+                            <input type="radio" name="metode" value="vinkel" checked onchange="byttMetode()" class="sr-only">
+                            <span class="text-[10px] font-bold text-slate-700">📐 Vinkelmåler (Grader)</span>
+                        </label>
+                        <label class="flex items-center justify-center p-2 border-2 border-slate-200 rounded-lg cursor-pointer hover:bg-sky-50 has-[:checked]:border-sky-600 has-[:checked]:bg-sky-50 transition-all text-center bg-white">
+                            <input type="radio" name="metode" value="tommestokk" onchange="byttMetode()" class="sr-only">
+                            <span class="text-[10px] font-bold text-slate-700">📏 Tommestokk (cm)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="vinkel-div" class="transition-opacity duration-300">
+                    <label class="block text-[11px] font-black uppercase text-sky-900 mb-1">4. Avlest vinkel (Grader °)</label>
                     <div class="relative flex items-center">
                         <input type="number" id="vinkel" step="0.1" min="0" max="180" oninput="kalkulerVertikal()" placeholder="F.eks. 170 eller 10" class="w-full p-4 border border-slate-300 rounded-lg text-xl text-center font-black text-sky-950 bg-sky-50 focus:border-sky-500 focus:ring-sky-500 shadow-inner">
                         <span class="absolute right-5 font-black text-2xl text-slate-400">°</span>
                     </div>
-                    <p class="text-[9px] text-slate-500 mt-1 italic text-center">Appen forstår både spisse vinkler (10°) og flate vinkler (170°).</p>
+                </div>
+
+                <div id="tommestokk-div" class="hidden transition-opacity duration-300">
+                    <label class="block text-[11px] font-black uppercase text-sky-900 mb-1">4. Mål i centimeter</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[9px] font-bold text-slate-500 mb-1 uppercase">S3 (Armlengde)</label>
+                            <div class="relative flex items-center">
+                                <input type="number" id="maalt_S3" value="15" step="0.1" oninput="kalkulerVertikal()" class="w-full p-4 border border-slate-300 rounded-lg text-lg text-center font-black text-sky-950 bg-sky-50 focus:border-sky-500 shadow-inner">
+                                <span class="absolute right-3 font-black text-xs text-slate-400">cm</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[9px] font-bold text-slate-500 mb-1 uppercase">D (Diagonal)</label>
+                            <div class="relative flex items-center">
+                                <input type="number" id="maalt_D" step="0.1" oninput="kalkulerVertikal()" placeholder="F.eks. 5.2" class="w-full p-4 border border-slate-300 rounded-lg text-lg text-center font-black text-sky-950 bg-sky-50 focus:border-sky-500 shadow-inner">
+                                <span class="absolute right-3 font-black text-xs text-slate-400">cm</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-[9px] text-slate-500 mt-2 italic text-center">Appen regner automatisk om til riktig vinkel og lastfaktor (LF = D / S3).</p>
                 </div>
 
             </section>
@@ -100,41 +168,74 @@
             kalkulerVertikal();
         }
 
+        function byttMetode() {
+            const metode = document.querySelector('input[name="metode"]:checked').value;
+            
+            if (metode === 'vinkel') {
+                document.getElementById('vinkel-div').classList.remove('hidden');
+                document.getElementById('tommestokk-div').classList.add('hidden');
+                document.getElementById('veiledning-vinkel').classList.remove('hidden');
+                document.getElementById('veiledning-tommestokk').classList.add('hidden');
+            } else {
+                document.getElementById('vinkel-div').classList.add('hidden');
+                document.getElementById('tommestokk-div').classList.remove('hidden');
+                document.getElementById('veiledning-vinkel').classList.add('hidden');
+                document.getElementById('veiledning-tommestokk').classList.remove('hidden');
+            }
+            kalkulerVertikal();
+        }
+
         function kalkulerVertikal() {
             const select = document.getElementById('linetype');
             let r3 = 0;
 
+            // Hent R3
             if (select.value === 'egen') {
                 r3 = parseFloat(document.getElementById('custom_r3').value) || 0;
             } else {
                 r3 = parseFloat(select.options[select.selectedIndex]?.getAttribute('data-r3') || 0);
             }
 
-            const avlestVinkel = parseFloat(document.getElementById('vinkel').value) || 0;
+            const metode = document.querySelector('input[name="metode"]:checked').value;
+            let avlestVinkel = 0;
+
+            // Finn vinkelen uansett hvilken metode som brukes
+            if (metode === 'vinkel') {
+                avlestVinkel = parseFloat(document.getElementById('vinkel').value) || 0;
+            } else {
+                let d = parseFloat(document.getElementById('maalt_D').value) || 0;
+                let s3 = parseFloat(document.getElementById('maalt_S3').value) || 15;
+                
+                if (d > 0 && s3 > 0) {
+                    if (d > 2 * s3) d = 2 * s3; // Unngå matematisk krasj hvis D tastet feil
+                    // Trigonometrisk omregning fra D og S3 til en reell vinkel
+                    avlestVinkel = (2 * Math.asin(d / (2 * s3))) * (180 / Math.PI); 
+                }
+            }
+
             const resKN = document.getElementById('resKN');
             const resKG = document.getElementById('resKG');
             const panel = document.getElementById('resultat-panel');
 
             if (r3 === 0 || avlestVinkel === 0) {
                 resKN.innerText = "0.00 kN";
-                resKG.innerText = "~ 0 kg trykk";
+                resKG.innerText = "~ 0 kg trykk i masta";
                 panel.className = "p-4 rounded-lg bg-slate-50 border border-slate-300 text-center space-y-1 shadow-inner transition-colors duration-300";
                 return;
             }
 
-            // Finn selve "knekken" i linja uansett hva montøren taster inn (f.eks 170 -> 10, 10 -> 10)
+            // Normaliser vinkelen slik at vi alltid jobber med selve knekken
             let knekkVinkel = avlestVinkel > 90 ? 180 - avlestVinkel : avlestVinkel;
             let vertikalKraft = 0;
 
-            // Sjekk hvilken maste-situasjon som er valgt
             const situasjon = document.querySelector('input[name="situasjon"]:checked').value;
 
             if (situasjon === 'to_spenn') {
-                // Bæremast/Avspenning: Knekken fordeles på to spenn. Nedtrekk = 2 * R3 * sin(knekk / 2)
+                // Bæremast/Avspenning: V = LF * R3
                 let vinkelPerSpennRadianer = (knekkVinkel / 2) * Math.PI / 180;
                 vertikalKraft = 2 * r3 * Math.sin(vinkelPerSpennRadianer);
             } else {
-                // Endestrekk: Hele knekken skjer i ett spenn. Nedtrekk = R3 * sin(knekk)
+                // Endestrekk
                 let vinkelRadianer = knekkVinkel * Math.PI / 180;
                 vertikalKraft = r3 * Math.sin(vinkelRadianer);
             }
@@ -142,7 +243,7 @@
             const vertikalKG = vertikalKraft * 101.9716;
 
             resKN.innerText = vertikalKraft.toFixed(2) + " kN";
-            resKG.innerText = "~ " + Math.round(vertikalKG) + " kg trykk";
+            resKG.innerText = "~ " + Math.round(vertikalKG) + " kg trykk i masta";
             panel.className = "p-4 rounded-lg bg-sky-100 border-2 border-sky-400 text-center space-y-1 shadow-sm transition-colors duration-300";
         }
     </script>

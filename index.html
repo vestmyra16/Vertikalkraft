@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Vertikalkraft Kalkulator v3.2</title>
+    <title>Vertikalkraft v4.1</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
     <meta name="author" content="Opphavsrett 2026 - vestmyra16">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <link rel="apple-touch-icon" href="https://vestmyra16.github.io/vertikalkraft/assets/icon-180.png">
-    <link rel="icon" href="https://vestmyra16.github.io/vertikalkraft/assets/icon-180.png">
     <style>
         body { -webkit-user-select: none; user-select: none; background-color: #f1f5f9; }
         canvas { touch-action: pan-x pan-y; cursor: crosshair; }
@@ -32,13 +31,10 @@
 
     <div id="app-sone" class="max-w-md mx-auto px-3 py-4 no-print">
         
-        <div class="bg-sky-900 text-white rounded-t-xl shadow-md overflow-hidden">
-            <img src="https://vestmyra16.github.io/vertikalkraft/assets/header_v3.png" alt="Vertikalkraft App Ikon" class="w-full h-auto" onerror="this.style.display='none'">
-            <div class="p-4 text-center bg-sky-950 border-t border-sky-800">
-                <h1 class="text-xl font-black tracking-wide text-sky-300">VERTIKALKRAFT v3.2</h1>
-                <p class="text-[10px] text-sky-100 uppercase font-bold tracking-wider mt-1">Sikker fjernmåling med zoom og presisjon</p>
-            </div>
-        </div>
+        <header class="bg-sky-900 text-white p-5 rounded-t-xl shadow-md text-center">
+            <h1 class="text-xl font-black tracking-wide text-sky-300">VERTIKALKRAFT v4.1</h1>
+            <p class="text-xs text-sky-100 mt-1 uppercase font-bold tracking-wider">Roaldmetoden & Dronepresisjon</p>
+        </header>
 
         <main class="bg-white p-4 rounded-b-xl shadow-md border-x border-b border-slate-200 space-y-5">
             
@@ -59,7 +55,7 @@
                 <div class="grid grid-cols-2 gap-2">
                     <div>
                         <label class="block text-[10px] font-bold uppercase text-slate-600">Kontrollert av</label>
-                        <input type="text" id="kontrollor" oninput="lagreKontrollor()" placeholder="Navn" class="w-full p-2 border border-slate-300 rounded text-sm font-bold bg-white shadow-inner">
+                        <input type="text" id="kontrollor" oninput="lagreKontrollor()" class="w-full p-2 border border-slate-300 rounded text-sm font-bold bg-white shadow-inner">
                     </div>
                     <div>
                         <label class="block text-[10px] font-bold uppercase text-slate-600">Dato kontrollert</label>
@@ -72,152 +68,238 @@
                         <label class="block text-[10px] font-bold uppercase text-slate-600">Mast nr</label>
                         <input type="text" id="mast" class="w-full p-2 border border-slate-300 rounded text-sm font-bold bg-white shadow-inner">
                     </div>
-                    <div>
-                        <label class="block text-[10px] font-bold uppercase text-slate-600">Mast type</label>
-                        <select id="mast_type" class="w-full p-2 border border-slate-300 rounded text-sm font-bold bg-white shadow-sm">
-                            <option value="H" selected>H</option>
-                            <option value="E">E</option>
-                            <option value="DH">DH</option>
+                    <div class="col-span-2">
+                        <label class="block text-[10px] font-black uppercase text-sky-900">Mast type</label>
+                        <select id="mast_type" class="w-full p-2 border-2 border-sky-400 rounded text-sm font-black bg-sky-50 shadow-sm">
+                            <option value="H" selected>H-Mast</option>
+                            <option value="A">A-Mast</option>
+                            <option value="Enkel">Enkelstolpe</option>
                             <option value="Portal">Portal</option>
-                            <option value="Gitter">Gitter</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-black uppercase text-sky-900">Fase nr</label>
-                        <select id="fase_nr" class="w-full p-2 border-2 border-sky-400 rounded text-sm font-black bg-sky-50 shadow-sm">
-                            <option value="1">Fase 1</option>
-                            <option value="2">Fase 2</option>
-                            <option value="3">Fase 3</option>
                         </select>
                     </div>
                 </div>
+            </section>
+            
+            <div class="bg-sky-950 p-2 rounded-lg shadow-inner">
+                <div class="grid grid-cols-2 gap-2">
+                    <label class="flex items-center justify-center p-3 rounded-md cursor-pointer text-center transition-all has-[:checked]:bg-sky-600 text-slate-300 has-[:checked]:text-white font-black text-xs uppercase tracking-wider">
+                        <input type="radio" name="hovedmetode" value="drone" checked onchange="byttHovedmetode()" class="sr-only">
+                        🛸 Dronemetoden
+                    </label>
+                    <label class="flex items-center justify-center p-3 rounded-md cursor-pointer text-center transition-all has-[:checked]:bg-sky-600 text-slate-300 has-[:checked]:text-white font-black text-xs uppercase tracking-wider">
+                        <input type="radio" name="hovedmetode" value="roald" onchange="byttHovedmetode()" class="sr-only">
+                        🛠️ Roaldmetoden
+                    </label>
+                </div>
+            </div>
+
+            <details class="bg-sky-50 p-3 rounded-lg border border-sky-200 text-slate-700">
+                <summary class="text-xs font-black uppercase text-sky-900 flex items-center gap-1 cursor-pointer outline-none hover:text-sky-700">
+                    ℹ️ Metodebeskrivelse & Veiledning
+                </summary>
+                <div class="mt-3 text-[11px] space-y-3 leading-relaxed border-t border-sky-200 pt-3">
+                    <div id="veil-drone">
+                        <strong class="text-sky-950 block mb-1">🛸 Slik utføres Dronemetoden (Bildeanalyse):</strong>
+                        <ol class="list-decimal pl-4 space-y-1">
+                            <li>Fly drona i vater (top-down) for å se vinkelavviket på lina.</li>
+                            <li>Last opp bildet under.</li>
+                            <li><span class="font-bold text-sky-700">Klikk 3 ganger på bildet:</span> Først på lina til venstre, så nøyaktig på knekken (isolatortoppen), og til slutt på lina til høyre. Finjuster med piltastene.</li>
+                        </ol>
+                    </div>
+                    <div id="veil-roald" class="hidden">
+                        <strong class="text-sky-950 block mb-1">🛠️ Slik utføres Roaldmetoden (Manuell feltmåling):</strong>
+                        <p class="mb-2">Utviklet for rask og vektbesparende kontroll via modifisert Biltema-vinkelmåler eller tommestokk.</p>
+                        <ul class="list-disc pl-4 space-y-1">
+                            <li><span class="font-bold">Vinkel (Grader):</span> Sikt langs spennene fra ca. 50m avstand for å unngå parallaksefeil. Les av gradene.</li>
+                            <li><span class="font-bold">Tommestokk (cm):</span> Legg to ledd à 15 cm (S3) i knekken. Mål diagonalåpningen (D) med tommestokk 2.</li>
+                        </ul>
+                    </div>
+                </div>
+            </details>
+
+            <section id="resultat-panel" class="p-4 rounded-lg bg-slate-50 border border-slate-300 text-center space-y-1 shadow-inner transition-colors duration-300">
+                <span class="block text-[10px] font-black uppercase text-slate-500 tracking-wider">Dimensjonerende Vertikalkraft (V)</span>
+                <div id="resKN" class="text-4xl font-black text-slate-800">0.00 kN</div>
+                <div id="resKG" class="text-sm font-bold text-slate-500">~ 0 kg trykk i masta</div>
+                <div id="beregnet-vinkel-tekst" class="text-[10px] font-bold text-sky-800 mt-1 hidden">Beregnet vinkel fra bilde: <span id="dyn-vinkel">0</span>°</div>
             </section>
 
             <section class="space-y-4">
-                <h3 class="text-xs font-black uppercase text-sky-900 border-b border-slate-200 pb-1">📷 Måling av vinkel θ (Theta)</h3>
                 
+                <div class="bg-slate-50 p-3 rounded border border-slate-200">
+                    <label class="block text-[11px] font-black uppercase text-sky-900 mb-2">1. Hva slags mast kontrolleres?</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <label class="flex flex-col items-center justify-center p-3 border-2 border-slate-200 rounded-lg cursor-pointer hover:bg-sky-50 has-[:checked]:border-sky-600 has-[:checked]:bg-sky-50 transition-all text-center bg-white">
+                            <input type="radio" name="situasjon" value="to_spenn" class="sr-only" checked onchange="kalkulerVertikal()">
+                            <span class="text-lg mb-1">↔️</span>
+                            <span class="text-[10px] font-bold text-slate-700">Bæremast / Avspenning</span>
+                        </label>
+                        <label class="flex flex-col items-center justify-center p-3 border-2 border-slate-200 rounded-lg cursor-pointer hover:bg-sky-50 has-[:checked]:border-sky-600 has-[:checked]:bg-sky-50 transition-all text-center bg-white">
+                            <input type="radio" name="situasjon" value="ett_spenn" class="sr-only" onchange="kalkulerVertikal()">
+                            <span class="text-lg mb-1">➡️</span>
+                            <span class="text-[10px] font-bold text-slate-700">Endestrekk</span>
+                        </label>
+                    </div>
+                </div>
+
                 <div>
-                    <input type="file" id="bilde-file" accept="image/*" class="w-full text-xs text-slate-500 file:mr-4 file:py-3 file:px-4 file:rounded-lg file:border-0 file:font-bold file:bg-sky-100 file:text-sky-800 hover:file:bg-sky-200 shadow-sm">
-                </div>
-                
-                <div id="status-boks" class="bg-sky-900 text-white text-center p-3 rounded-lg text-[11px] font-bold hidden shadow-inner tracking-wide leading-relaxed">
-                    Status melding...
+                    <label class="block text-[11px] font-black uppercase text-sky-900 mb-1">2. Linetype / Kabel (Maks strekkraft)</label>
+                    <select id="linetype" onchange="haandterLinetype()" class="w-full p-3 border border-slate-300 rounded text-sm font-bold bg-white focus:border-sky-500 shadow-sm">
+                        <option value="" data-r3="0">-- Velg linetype --</option>
+                        <optgroup label="EX / EXCEL (Lavspent)">
+                            <option value="EX-25" data-r3="2.28">EX 4x25 / 3x25+25 (2.28 kN)</option>
+                            <option value="EX-50" data-r3="4.56">EX 4x50 / 3x50+50 (4.56 kN)</option>
+                            <option value="EX-95" data-r3="8.68">EX 4x95 / 3x95+95 (8.68 kN)</option>
+                        </optgroup>
+                        <optgroup label="Standard FeAl-liner">
+                            <option value="25-6/1" data-r3="2.84">FeAl 25 6/1 (2.84 kN)</option>
+                            <option value="50-6/1" data-r3="5.46">FeAl 50 6/1 (5.46 kN)</option>
+                            <option value="70-6/1" data-r3="7.80">FeAl 70 6/1 (7.80 kN)</option>
+                            <option value="95-26/7" data-r3="11.00">FeAl 95 26/7 (11.00 kN)</option>
+                            <option value="120-22/7" data-r3="13.80">FeAl 120 22/7 (13.80 kN)</option>
+                            <option value="150-22/7" data-r3="16.50">FeAl 150 22/7 (16.50 kN)</option>
+                            <option value="150+-26/7" data-r3="17.20">FeAl 150+ 26/7 (17.20 kN)</option>
+                            <option value="240-26/7" data-r3="25.90">FeAl 240 26/7 (25.90 kN)</option>
+                            <option value="300" data-r3="32.50">FeAl 300 (32.50 kN)</option>
+                        </optgroup>
+                        <option value="egen" data-r3="custom">✏️ Egendefinert verdi (kN)...</option>
+                    </select>
                 </div>
 
-                <div id="bilde-verktøy" class="hidden space-y-2">
-                    <div class="flex justify-between items-center bg-slate-200 p-2 rounded-lg shadow-inner border border-slate-300">
-                        <span class="text-[11px] font-black text-slate-700 uppercase tracking-wider pl-2">🔍 Forstørr for presisjon:</span>
-                        <div class="flex space-x-1">
-                            <button type="button" onclick="endreZoom(-0.5)" class="bg-white text-slate-800 px-4 py-1.5 rounded shadow text-lg font-black hover:bg-slate-100 active:bg-slate-300 border border-slate-300">➖</button>
-                            <span id="zoom-tekst" class="text-xs font-black w-14 text-center py-2 text-slate-700">100%</span>
-                            <button type="button" onclick="endreZoom(0.5)" class="bg-white text-slate-800 px-4 py-1.5 rounded shadow text-lg font-black hover:bg-slate-100 active:bg-slate-300 border border-slate-300">➕</button>
-                        </div>
-                    </div>
+                <div id="custom-r3-div" class="hidden bg-slate-50 p-3 rounded border border-slate-200">
+                    <label class="block text-[10px] font-black uppercase text-slate-700 mb-1">Skriv inn mekanisk strekkraft R₃ (kN)</label>
+                    <input type="number" id="custom_r3" oninput="kalkulerVertikal()" placeholder="F.eks. 15.5" class="w-full p-2 border border-slate-300 rounded text-sm text-center font-bold shadow-inner">
+                </div>
+
+                <div id="seksjon-drone" class="space-y-3">
+                    <label class="block text-[11px] font-black uppercase text-sky-900 mb-1">3. Mål vinkel på dronebilde</label>
+                    <input type="file" id="drone-file" accept="image/*" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:font-bold file:bg-sky-100 file:text-sky-700 hover:file:bg-sky-200">
                     
-                    <div id="canvas-container" class="relative border-4 border-slate-800 rounded-lg overflow-auto bg-slate-900 shadow-xl max-h-[50vh]">
-                        <canvas id="bilde-canvas" class="w-full h-auto origin-top-left"></canvas>
+                    <div id="status-boks" class="bg-sky-900 text-white text-center p-3 rounded-lg text-[11px] font-bold hidden shadow-inner tracking-wide">
+                        Klikk 1: Sett punkt på lina til venstre
                     </div>
 
-                    <div id="nudge-panel" class="bg-slate-800 p-3 rounded-lg shadow-inner border border-slate-700 hidden">
-                        <div class="flex justify-between items-center">
-                            <div class="text-sky-300 text-[10px] font-bold uppercase">Finjuster siste punkt</div>
-                            <button type="button" onclick="angrePunkt()" class="bg-red-500 hover:bg-red-600 text-white text-[10px] px-3 py-1.5 rounded font-bold uppercase shadow">↩️ Angre</button>
+                    <div id="bilde-verktøy" class="hidden space-y-2">
+                        <div class="flex justify-between items-center bg-slate-200 p-2 rounded-lg shadow-inner border border-slate-300">
+                            <span class="text-[11px] font-black text-slate-700 uppercase tracking-wider pl-2">🔍 Forstørr for presisjon:</span>
+                            <div class="flex space-x-1">
+                                <button type="button" onclick="endreZoom(-0.5)" class="bg-white text-slate-800 px-4 py-1.5 rounded shadow text-lg font-black hover:bg-slate-100 active:bg-slate-300 border border-slate-300">➖</button>
+                                <span id="zoom-tekst" class="text-xs font-black w-14 text-center py-2 text-slate-700">100%</span>
+                                <button type="button" onclick="endreZoom(0.5)" class="bg-white text-slate-800 px-4 py-1.5 rounded shadow text-lg font-black hover:bg-slate-100 active:bg-slate-300 border border-slate-300">➕</button>
+                            </div>
                         </div>
-                        <div class="grid grid-cols-3 gap-1 w-32 mx-auto mt-2">
-                            <div></div>
-                            <button type="button" onclick="flyttPunkt(0, -1)" class="bg-slate-600 active:bg-slate-500 text-white p-2 rounded font-black text-sm">⬆️</button>
-                            <div></div>
-                            <button type="button" onclick="flyttPunkt(-1, 0)" class="bg-slate-600 active:bg-slate-500 text-white p-2 rounded font-black text-sm">⬅️</button>
-                            <button type="button" onclick="flyttPunkt(0, 1)" class="bg-slate-600 active:bg-slate-500 text-white p-2 rounded font-black text-sm">⬇️</button>
-                            <button type="button" onclick="flyttPunkt(1, 0)" class="bg-slate-600 active:bg-slate-500 text-white p-2 rounded font-black text-sm">➡️</button>
+                        
+                        <div id="canvas-container" class="relative border-4 border-slate-800 rounded-lg overflow-auto bg-slate-900 shadow-xl max-h-[50vh]">
+                            <canvas id="drone-canvas" class="w-full h-auto origin-top-left cursor-crosshair"></canvas>
+                        </div>
+
+                        <div id="nudge-panel" class="bg-slate-800 p-3 rounded-lg shadow-inner border border-slate-700 hidden">
+                            <div class="flex justify-between items-center">
+                                <div class="text-sky-300 text-[10px] font-bold uppercase">Finjuster siste punkt</div>
+                                <button type="button" onclick="angrePunkt()" class="bg-red-500 hover:bg-red-600 text-white text-[10px] px-3 py-1.5 rounded font-bold uppercase shadow">↩️ Angre</button>
+                            </div>
+                            <div class="grid grid-cols-3 gap-1 w-32 mx-auto mt-2">
+                                <div></div>
+                                <button type="button" onclick="flyttPunkt(0, -1)" class="bg-slate-600 active:bg-slate-500 text-white p-2 rounded font-black text-sm">⬆️</button>
+                                <div></div>
+                                <button type="button" onclick="flyttPunkt(-1, 0)" class="bg-slate-600 active:bg-slate-500 text-white p-2 rounded font-black text-sm">⬅️</button>
+                                <button type="button" onclick="flyttPunkt(0, 1)" class="bg-slate-600 active:bg-slate-500 text-white p-2 rounded font-black text-sm">⬇️</button>
+                                <button type="button" onclick="flyttPunkt(1, 0)" class="bg-slate-600 active:bg-slate-500 text-white p-2 rounded font-black text-sm">➡️</button>
+                            </div>
+                        </div>
+                        <button type="button" onclick="nullstillDroneKlikk()" class="w-full bg-slate-200 text-slate-700 font-bold p-3 rounded-lg text-xs border border-slate-300 hover:bg-slate-300 shadow-sm mt-2">🔄 Nullstill punkter på bildet</button>
+                    </div>
+                </div>
+
+                <div id="seksjon-roald" class="hidden space-y-4">
+                    <div class="bg-slate-50 p-2 rounded border border-slate-200">
+                        <div class="grid grid-cols-2 gap-2">
+                            <label class="flex items-center justify-center p-2 border border-slate-300 rounded cursor-pointer bg-white text-[10px] font-bold text-slate-700 has-[:checked]:bg-sky-50 has-[:checked]:border-sky-600">
+                                <input type="radio" name="roald_underverktøy" value="vinkel" checked onchange="byttRoaldVerktoy()" class="sr-only">📐 Biltema vinkelmål
+                            </label>
+                            <label class="flex items-center justify-center p-2 border border-slate-300 rounded cursor-pointer bg-white text-[10px] font-bold text-slate-700 has-[:checked]:bg-sky-50 has-[:checked]:border-sky-600">
+                                <input type="radio" name="roald_underverktøy" value="tommestokk" onchange="byttRoaldVerktoy()" class="sr-only">📏 Tommestokkmetode
+                            </label>
+                        </div>
+                    </div>
+
+                    <div id="roald-vinkel-div">
+                        <label class="block text-[11px] font-black uppercase text-sky-900 mb-1">Avlest vinkel på verktøy (Grader °)</label>
+                        <div class="relative flex items-center">
+                            <input type="number" id="vinkel_input" step="0.1" oninput="kalkulerVertikal()" placeholder="F.eks. 167 eller 13" class="w-full p-3 border border-slate-300 rounded-lg text-lg text-center font-black bg-sky-50">
+                            <span class="absolute right-4 font-black text-slate-400">°</span>
+                        </div>
+                    </div>
+
+                    <div id="roald-tommestokk-div" class="hidden grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[9px] font-bold text-slate-500 mb-1 uppercase">S3 (Armlengde)</label>
+                            <div class="relative flex items-center">
+                                <input type="number" id="maalt_S3" value="15" step="0.1" oninput="kalkulerVertikal()" class="w-full p-3 border border-slate-300 rounded-lg text-center font-bold bg-sky-50">
+                                <span class="absolute right-2 font-bold text-[10px] text-slate-400">cm</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[9px] font-bold text-slate-500 mb-1 uppercase">D (Diagonalåpning)</label>
+                            <div class="relative flex items-center">
+                                <input type="number" id="maalt_D" step="0.1" oninput="kalkulerVertikal()" placeholder="F.eks. 2.0" class="w-full p-3 border border-slate-300 rounded-lg text-center font-bold bg-sky-50">
+                                <span class="absolute right-2 font-bold text-[10px] text-slate-400">cm</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-                
-                <div id="kontroll-knapper" class="hidden">
-                    <button type="button" onclick="nullstillMaaling()" class="w-full bg-slate-200 text-slate-700 font-bold p-3 rounded-lg text-xs border border-slate-300 hover:bg-slate-300 shadow-sm">🔄 Nullstill måling / Ta nytt bilde</button>
-                </div>
+
             </section>
 
-            <section class="space-y-4 pt-2 border-t border-slate-200">
-                <h3 class="text-xs font-black uppercase text-sky-900 border-b border-slate-200 pb-1">⚖️ Krefter & Beregning</h3>
-                
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-[10px] font-bold uppercase text-slate-600">Kjente krefter (H+V) [kg]</label>
-                        <input type="number" id="krefter_kg" value="1000" oninput="kalkulerAlt()" class="w-full p-2 border-2 border-orange-500 rounded font-black text-sm bg-orange-50 text-center shadow-inner">
-                        <span class="block text-[8px] text-slate-400 text-center mt-0.5">Fra f.eks. E.T. Travers</span>
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold uppercase text-slate-600">Vinkel θ (Theta) [grader]</label>
-                        <input type="number" id="vinkel_theta" readonly class="w-full p-2 border border-slate-300 rounded text-sm bg-slate-100 text-center font-black text-slate-600 shadow-inner">
-                        <span class="block text-[8px] text-slate-400 text-center mt-0.5">Beregnet fra bilde over</span>
-                    </div>
-                </div>
-
-                <div id="resultat-panel" class="p-4 rounded-xl border-2 border-slate-200 text-center space-y-2 bg-white transition-colors duration-300 shadow-sm hidden">
-                    <span class="block text-[9px] font-black uppercase text-slate-500 tracking-wider">Beregnet Vertikalkkraft (N) [kg]</span>
-                    <div id="res-vertikalkraft" class="text-4xl font-black text-sky-900">- kg</div>
-                    <div id="res-vinkel-tekst" class="text-[11px] font-bold text-sky-700 mt-1">- grader</div>
-                </div>
-            </section>
-
-            <section class="space-y-2 pt-2 border-t border-slate-200">
+            <section class="space-y-2 pt-4 border-t border-slate-200">
                 <button type="button" onclick="lagreTilLogg()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-black p-4 rounded-xl text-sm shadow transition-colors">💾 LAGRE I LOGG</button>
                 <div class="grid grid-cols-2 gap-2">
                     <button type="button" onclick="lastExcel()" class="bg-blue-700 hover:bg-blue-800 text-white font-bold p-3 rounded-xl text-xs shadow transition-colors">📊 LAST NED EXCEL</button>
                     <button type="button" onclick="lagPDF()" class="bg-amber-600 hover:bg-amber-700 text-white font-bold p-3 rounded-xl text-xs shadow transition-colors">📄 LAG PDF / RAPPORT</button>
                 </div>
-                <button type="button" onclick="nesteMast()" class="w-full bg-slate-600 hover:bg-slate-700 text-white font-bold p-3 rounded-xl text-xs shadow transition-colors">⏭️ NESTE MAST</button>
             </section>
-
-            <div class="pt-2">
-                <a href="https://vestmyra16.github.io/travers/" class="block w-full bg-slate-800 hover:bg-slate-900 text-white text-center font-black p-3 rounded-xl transition-colors text-xs shadow">
-                    🔙 TILBAKE TIL E.T. TRAVERS
-                </a>
-            </div>
         </main>
     </div>
 
     <div id="printSone"></div>
 
     <script>
-        const canvas = document.getElementById('bilde-canvas');
-        const ctx = canvas.getContext('2d');
-        let bildeImg = new Image();
-        
-        let fase = "VENTER"; 
-        let punkter = [];
-        let zoomLevel = 1.0;
-        let maaltVinkelDeg = 0;
-
+        // Laster inn info
         window.onload = () => {
-            document.getElementById('netteier').value = localStorage.getItem('vertikalkraft_netteier') || "";
-            document.getElementById('linje').value = localStorage.getItem('vertikalkraft_linje') || "";
-            document.getElementById('kontrollor').value = localStorage.getItem('vertikalkraft_kontrollor') || "";
+            document.getElementById('netteier').value = localStorage.getItem('vertikal_roald_netteier') || "";
+            document.getElementById('linje').value = localStorage.getItem('vertikal_roald_linje') || "";
+            document.getElementById('kontrollor').value = localStorage.getItem('vertikal_roald_kontrollor') || "";
             document.getElementById('dato_kontroll').value = new Date().toLocaleDateString('no-NO', {day:'2-digit', month:'2-digit', year:'numeric'});
         };
 
-        function lagreKontrollor() { localStorage.setItem("vertikalkraft_kontrollor", document.getElementById("kontrollor").value); }
+        function lagreKontrollor() { localStorage.setItem("vertikal_roald_kontrollor", document.getElementById("kontrollor").value); }
 
-        document.getElementById('bilde-file').addEventListener('change', function(e) {
+        // Globale variabler for drone-canvas
+        let dronePoints = [];
+        let droneImg = new Image();
+        let bildeBeregnetVinkel = 0;
+        let zoomLevel = 1.0;
+        const canvas = document.getElementById('drone-canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Bildeopplasting
+        document.getElementById('drone-file').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (!file) return;
             const reader = new FileReader();
             reader.onload = function(event) {
-                bildeImg.onload = function() {
+                droneImg.onload = function() {
                     document.getElementById('bilde-verktøy').classList.remove('hidden');
-                    document.getElementById('kontroll-knapper').classList.remove('hidden');
+                    document.getElementById('status-boks').classList.remove('hidden');
                     
-                    canvas.width = bildeImg.width;
-                    canvas.height = bildeImg.height;
+                    canvas.width = droneImg.width;
+                    canvas.height = droneImg.height;
                     
                     zoomLevel = 1.0;
                     endreZoom(0); 
-                    
-                    startMaaling();
+                    nullstillDroneKlikk();
                 }
-                bildeImg.src = event.target.result;
+                droneImg.src = event.target.result;
             }
             reader.readAsDataURL(file);
         });
@@ -230,144 +312,238 @@
             canvas.style.width = (zoomLevel * 100) + "%";
         }
 
-        canvas.addEventListener('click', function(e) {
-            if (!bildeImg.src) return;
+        // SMART KLIKK (Skiller touch/scroll fra klikk)
+        let isDragging = false;
+        let startTouchPos = {x:0, y:0};
+
+        canvas.addEventListener('pointerdown', function(e) { if (!droneImg.src) return; isDragging = false; startTouchPos = {x: e.clientX, y: e.clientY}; });
+        canvas.addEventListener('pointermove', function(e) { if (Math.abs(e.clientX - startTouchPos.x) > 10 || Math.abs(e.clientY - startTouchPos.y) > 10) { isDragging = true; } });
+
+        canvas.addEventListener('pointerup', function(e) {
+            if (!droneImg.src || isDragging || dronePoints.length >= 3) return;
 
             const rect = canvas.getBoundingClientRect();
             const scaleX = canvas.width / rect.width;
             const scaleY = canvas.height / rect.height;
             const x = (e.clientX - rect.left) * scaleX;
             const y = (e.clientY - rect.top) * scaleY;
-
-            if (fase === "KLIKKER") {
-                if (punkter.length < 3) {
-                    punkter.push({x, y});
-                    document.getElementById('nudge-panel').classList.remove('hidden');
-                    sjekkStatus();
-                }
-            }
+            
+            dronePoints.push({x, y});
+            document.getElementById('nudge-panel').classList.remove('hidden');
+            oppdaterDroneLogikk();
             tegnCanvas();
         });
 
+        // NUDGE / JOYSTICK
         function flyttPunkt(dx, dy) {
-            if (punkter.length === 0) return;
-            
+            if (dronePoints.length === 0) return;
             let baseLinjeTykkelse = (canvas.width / 400); 
             if (baseLinjeTykkelse < 2) baseLinjeTykkelse = 2;
             let justering = 2 * baseLinjeTykkelse; 
             
-            punkter[punkter.length - 1].x += (dx * justering);
-            punkter[punkter.length - 1].y += (dy * justering);
+            dronePoints[dronePoints.length - 1].x += (dx * justering);
+            dronePoints[dronePoints.length - 1].y += (dy * justering);
             
+            oppdaterDroneLogikk();
             tegnCanvas();
-            sjekkStatus();
         }
 
         function angrePunkt() {
-            if (fase === "KLIKKER" || fase === "FERDIG") {
-                if (fase === "FERDIG") fase = "KLIKKER"; 
-                punkter.pop();
-                if (punkter.length === 0) document.getElementById('nudge-panel').classList.add('hidden');
-                
-                document.getElementById("vinkel_theta").value = "";
-                document.getElementById('resultat-panel').classList.add('hidden');
-                maaltVinkelDeg = 0;
-                
-                sjekkStatus();
-            }
-            tegnCanvas();
-        }
-
-        function sjekkStatus() {
-            if (punkter.length === 0) {
-                oppdaterStatus("Trinn 1: Klikk på opphengspunktet (Masta) der kjedet er festet.", "bg-sky-900");
-            } else if (punkter.length === 1) {
-                oppdaterStatus("📍 Finjuster Punkt 1 med pilene, eller Trinn 2: Klikk *rett ned* fra Punkt 1 for å angi vertikal loddlinje.", "bg-sky-900");
-            } else if (punkter.length === 2) {
-                oppdaterStatus("📍 Finjuster Punkt 2 med pilene (rett ned), eller Trinn 3: Klikk helt *i bunnen* av isolatorkjedet.", "bg-sky-900");
-            } else if (punkter.length === 3) {
-                oppdaterStatus("📍 Finjuster Punkt 3 til midten av skåla. Resultat er beregnet under.", "bg-slate-800");
-                fase = "FERDIG";
-                
-                maaltVinkelDeg = beregnVinkel(punkter[0], punkter[1], punkter[2]);
-                document.getElementById("vinkel_theta").value = maaltVinkelDeg.toFixed(1);
-                kalkulerAlt();
+            if (dronePoints.length > 0) {
+                dronePoints.pop();
+                if (dronePoints.length === 0) document.getElementById('nudge-panel').classList.add('hidden');
+                oppdaterDroneLogikk();
+                tegnCanvas();
             }
         }
 
         function tegnCanvas() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(bildeImg, 0, 0, canvas.width, canvas.height);
+            ctx.drawImage(droneImg, 0, 0, canvas.width, canvas.height);
             
             let baseLinjeTykkelse = (canvas.width / 400); 
             if (baseLinjeTykkelse < 2) baseLinjeTykkelse = 2;
             
-            ctx.strokeStyle = '#ef4444'; ctx.lineWidth = baseLinjeTykkelse; ctx.fillStyle = '#ef4444';
-            ctx.font = `bold ${baseLinjeTykkelse * 6}px Arial`; ctx.fillStyle = "white"; ctx.shadowBlur = baseLinjeTykkelse * 2; ctx.shadowColor = "black";
-
-            if (punkter.length > 0) {
-                punkter.forEach((p, i) => {
-                    ctx.fillStyle = '#ef4444';
-                    ctx.beginPath(); ctx.arc(p.x, p.y, baseLinjeTykkelse * 2, 0, 2 * Math.PI); ctx.fill();
-                    if (i === punkter.length - 1) {
-                        ctx.strokeStyle = 'white';
-                        ctx.beginPath(); ctx.arc(p.x, p.y, baseLinjeTykkelse * 4, 0, 2 * Math.PI); ctx.stroke();
-                    }
-                });
-                
-                if (punkter.length >= 2) {
-                    ctx.strokeStyle = '#38bdf8'; 
-                    ctx.beginPath(); ctx.moveTo(punkter[0].x, punkter[0].y); ctx.lineTo(punkter[1].x, punkter[1].y); ctx.stroke();
-                    ctx.fillStyle = 'white'; ctx.fillText("Vertikal", punkter[1].x + (baseLinjeTykkelse*4), punkter[1].y);
+            ctx.strokeStyle = '#f59e0b'; // Guloransje
+            ctx.lineWidth = baseLinjeTykkelse;
+            ctx.fillStyle = '#ef4444'; 
+            
+            for (let i = 0; i < dronePoints.length; i++) {
+                ctx.beginPath();
+                ctx.arc(dronePoints[i].x, dronePoints[i].y, baseLinjeTykkelse * 2, 0, 2 * Math.PI);
+                ctx.fill();
+                // Marker sist satte punkt for finjustering
+                if (i === dronePoints.length - 1) {
+                    ctx.strokeStyle = 'white';
+                    ctx.beginPath(); ctx.arc(dronePoints[i].x, dronePoints[i].y, baseLinjeTykkelse * 4, 0, 2 * Math.PI); ctx.stroke();
+                    ctx.strokeStyle = '#f59e0b'; // Tilbake til guloransje for linjene
                 }
-                if (punkter.length >= 3) {
-                    ctx.strokeStyle = '#ef4444'; 
-                    ctx.beginPath(); ctx.moveTo(punkter[0].x, punkter[0].y); ctx.lineTo(punkter[2].x, punkter[2].y); ctx.stroke();
-                    ctx.fillStyle = 'white'; ctx.fillText("Kjede", punkter[2].x + (baseLinjeTykkelse*4), punkter[2].y);
+                
+                if (i > 0) {
+                    ctx.beginPath();
+                    ctx.moveTo(dronePoints[i-1].x, dronePoints[i-1].y);
+                    ctx.lineTo(dronePoints[i].x, dronePoints[i].y);
+                    ctx.stroke();
                 }
             }
-            ctx.shadowBlur = 0; 
         }
 
-        function beregnVinkel(p1, p2, p3) {
-            let v1 = {x: p2.x - p1.x, y: p2.y - p1.y};
-            let v2 = {x: p3.x - p1.x, y: p3.y - p1.y};
-            let d1 = Math.sqrt(v1.x * v1.x + v1.y * v1.y);
-            let d2 = Math.sqrt(v2.x * v2.x + v2.y * v2.y);
-            let dot = v1.x * v2.x + v1.y * v2.y;
-            let a = Math.acos(dot / (d1 * d2));
-            return a * (180 / Math.PI); 
+        function oppdaterDroneLogikk() {
+            const boks = document.getElementById('status-boks');
+            if (dronePoints.length === 0) {
+                boks.className = "text-white text-center p-3 rounded-lg text-[11px] font-bold bg-sky-900";
+                boks.innerText = "Klikk 1: Sett punkt på lina til venstre";
+                bildeBeregnetVinkel = 0;
+            } else if (dronePoints.length === 1) {
+                boks.innerText = "📍 Finjuster P1, eller Klikk 2: Sett punkt på knekken (isolatoren)";
+            } else if (dronePoints.length === 2) {
+                boks.innerText = "📍 Finjuster P2, eller Klikk 3: Sett punkt på lina til høyre";
+            } else if (dronePoints.length === 3) {
+                boks.className = "text-white text-center p-3 rounded-lg text-[11px] font-bold bg-slate-800";
+                boks.innerText = "✓ Ferdig analysert! Finjuster P3 ved behov.";
+                
+                const p1 = dronePoints[0];
+                const p2 = dronePoints[1]; // Vertex (knekken)
+                const p3 = dronePoints[2];
+
+                const v1 = { x: p1.x - p2.x, y: p1.y - p2.y };
+                const v2 = { x: p3.x - p2.x, y: p3.y - p2.y };
+
+                const dot = v1.x * v2.x + v1.y * v2.y;
+                const mag1 = Math.sqrt(v1.x * v1.x + v1.y * v1.y);
+                const mag2 = Math.sqrt(v2.x * v2.x + v2.y * v2.y);
+
+                let rad = Math.acos(dot / (mag1 * mag2));
+                bildeBeregnetVinkel = rad * (180 / Math.PI);
+                
+                document.getElementById('beregnet-vinkel-tekst').classList.remove('hidden');
+                document.getElementById('dyn-vinkel').innerText = bildeBeregnetVinkel.toFixed(1);
+            } else {
+                document.getElementById('beregnet-vinkel-tekst').classList.add('hidden');
+            }
+            kalkulerVertikal();
         }
 
-        function startMaaling() { punkter = []; fase = "KLIKKER"; document.getElementById('nudge-panel').classList.add('hidden'); tegnCanvas(); sjekkStatus(); kalkulerAlt(); }
-        function oppdaterStatus(tekst, cls) { const b = document.getElementById('status-boks'); b.className = `text-white text-center p-3 rounded-lg text-[11px] font-bold ${cls}`; b.innerText = tekst; b.classList.remove('hidden'); }
-        function nullstillMaaling() { document.getElementById("bilde-file").value = ""; document.getElementById('bilde-verktøy').classList.add('hidden'); document.getElementById('kontroll-knapper').classList.add('hidden'); startMaaling(); }
-
-        function kalkulerAlt() {
-            let n = parseInt(document.getElementById('krefter_kg').value);
-            let resVertikalkraft = document.getElementById('res-vertikalkraft');
-            let resVinkel = document.getElementById('res-vinkel-tekst');
-            let panel = document.getElementById('resultat-panel');
-
-            if (maaltVinkelDeg === 0) { resVertikalkraft.innerText = "- kg"; resVinkel.innerText = "- grader"; panel.classList.add('hidden'); return; }
-
-            let tR = maaltVinkelDeg * (Math.PI / 180);
-            let nV = n * Math.cos(tR);
-
-            resVertikalkraft.innerText = `${Math.round(nV)} kg`;
-            resVinkel.innerText = `${maaltVinkelDeg.toFixed(1)}° vinkel (θ)`;
-            panel.classList.remove('hidden');
+        function nullstillDroneKlikk() {
+            dronePoints = [];
+            bildeBeregnetVinkel = 0;
+            document.getElementById('nudge-panel').classList.add('hidden');
+            oppdaterDroneLogikk();
+            tegnCanvas();
+            kalkulerVertikal();
         }
 
+        function byttHovedmetode() {
+            const hm = document.querySelector('input[name="hovedmetode"]:checked').value;
+            if (hm === 'drone') {
+                document.getElementById('seksjon-drone').classList.remove('hidden');
+                document.getElementById('seksjon-roald').classList.add('hidden');
+                document.getElementById('veil-drone').classList.remove('hidden');
+                document.getElementById('veil-roald').classList.add('hidden');
+            } else {
+                document.getElementById('seksjon-drone').classList.add('hidden');
+                document.getElementById('seksjon-roald').classList.remove('hidden');
+                document.getElementById('veil-drone').classList.add('hidden');
+                document.getElementById('veil-roald').classList.remove('hidden');
+            }
+            kalkulerVertikal();
+        }
+
+        function byttRoaldVerktoy() {
+            const sub = document.querySelector('input[name="roald_underverktøy"]:checked').value;
+            if (sub === 'vinkel') {
+                document.getElementById('roald-vinkel-div').classList.remove('hidden');
+                document.getElementById('roald-tommestokk-div').classList.add('hidden');
+            } else {
+                document.getElementById('roald-vinkel-div').classList.add('hidden');
+                document.getElementById('roald-tommestokk-div').classList.remove('hidden');
+            }
+            kalkulerVertikal();
+        }
+
+        function haandterLinetype() {
+            const select = document.getElementById('linetype');
+            const customDiv = document.getElementById('custom-r3-div');
+            if (select.value === 'egen') {
+                customDiv.classList.remove('hidden');
+            } else {
+                customDiv.classList.add('hidden');
+                document.getElementById('custom_r3').value = '';
+            }
+            kalkulerVertikal();
+        }
+
+        function kalkulerVertikal() {
+            const select = document.getElementById('linetype');
+            let r3 = 0;
+
+            if (select.value === 'egen') {
+                r3 = parseFloat(document.getElementById('custom_r3').value) || 0;
+            } else {
+                r3 = parseFloat(select.options[select.selectedIndex]?.getAttribute('data-r3') || 0);
+            }
+
+            const hovedmetode = document.querySelector('input[name="hovedmetode"]:checked').value;
+            let avlestVinkel = 0;
+
+            if (hovedmetode === 'drone') {
+                avlestVinkel = bildeBeregnetVinkel;
+            } else {
+                const roaldVerktoy = document.querySelector('input[name="roald_underverktøy"]:checked').value;
+                if (roaldVerktoy === 'vinkel') {
+                    avlestVinkel = parseFloat(document.getElementById('vinkel_input').value) || 0;
+                } else {
+                    let d = parseFloat(document.getElementById('maalt_D').value) || 0;
+                    let s3 = parseFloat(document.getElementById('maalt_S3').value) || 15;
+                    if (d > 0 && s3 > 0) {
+                        if (d > 2 * s3) d = 2 * s3;
+                        avlestVinkel = (2 * Math.asin(d / (2 * s3))) * (180 / Math.PI); 
+                    }
+                }
+            }
+
+            const resKN = document.getElementById('resKN');
+            const resKG = document.getElementById('resKG');
+            const panel = document.getElementById('resultat-panel');
+
+            if (r3 === 0 || avlestVinkel === 0) {
+                resKN.innerText = "0.00 kN";
+                resKG.innerText = "~ 0 kg trykk i masta";
+                panel.className = "p-4 rounded-lg bg-slate-50 border border-slate-300 text-center space-y-1 shadow-inner transition-colors duration-300";
+                return;
+            }
+
+            let knekkVinkel = avlestVinkel > 90 ? 180 - avlestVinkel : avlestVinkel;
+            let vertikalKraft = 0;
+            const situasjon = document.querySelector('input[name="situasjon"]:checked').value;
+
+            if (situasjon === 'to_spenn') {
+                let vinkelPerSpennRadianer = (knekkVinkel / 2) * Math.PI / 180;
+                vertikalKraft = 2 * r3 * Math.sin(vinkelPerSpennRadianer);
+            } else {
+                let vinkelRadianer = knekkVinkel * Math.PI / 180;
+                vertikalKraft = r3 * Math.sin(vinkelRadianer);
+            }
+
+            const vertikalKG = vertikalKraft * 101.9716;
+
+            resKN.innerText = vertikalKraft.toFixed(2) + " kN";
+            resKG.innerText = "~ " + Math.round(vertikalKG) + " kg trykk i masta";
+            panel.className = "p-4 rounded-lg bg-sky-100 border-2 border-sky-400 text-center space-y-1 shadow-sm transition-colors duration-300";
+        }
+
+        // DATABASE, PDF, EXCEL
         function lagreTilLogg() {
             let mnr = document.getElementById("mast").value;
             if(!mnr) return alert("Du må fylle ut Mast nr.");
             
-            localStorage.setItem('vertikalkraft_netteier', document.getElementById('netteier').value);
-            localStorage.setItem('vertikalkraft_linje', document.getElementById('linje').value);
+            localStorage.setItem('vertikal_roald_netteier', document.getElementById('netteier').value);
+            localStorage.setItem('vertikal_roald_linje', document.getElementById('linje').value);
 
-            let db = JSON.parse(localStorage.getItem("vertikalkraft_db") || "[]");
-            let v = parseInt(document.getElementById('res-vertikalkraft').innerText) || "";
+            let db = JSON.parse(localStorage.getItem("vertikal_roald_db") || "[]");
+            
+            const hm = document.querySelector('input[name="hovedmetode"]:checked').value;
+            let metodeBrukt = hm === 'drone' ? "Dronebilde" : "Roald (Manuell)";
 
             let rad = {
                 dato: document.getElementById("dato_kontroll").value,
@@ -376,70 +552,66 @@
                 linje: document.getElementById("linje").value,
                 mast: mnr,
                 mast_type: document.getElementById("mast_type").value,
-                fase_nr: document.getElementById("fase_nr").value,
-                kjente_krefter_kg: document.getElementById('krefter_kg').value,
-                vinkel_theta: maaltVinkelDeg > 0 ? parseFloat(maaltVinkelDeg.toFixed(1)) : "",
-                vertikalkraft_kg: v
+                linetype: document.getElementById("linetype").value,
+                metode: metodeBrukt,
+                beregnet_kn: document.getElementById("resKN").innerText,
+                beregnet_kg: document.getElementById("resKG").innerText
             };
 
             db.push(rad);
-            localStorage.setItem("vertikalkraft_db", JSON.stringify(db));
-            alert(`Mast ${mnr}, Fase ${rad.fase_nr} lagret i loggen!`);
+            localStorage.setItem("vertikal_roald_db", JSON.stringify(db));
+            alert(`Mast ${mnr} lagret i loggen!`);
         }
 
         function lastExcel() {
-            let db = JSON.parse(localStorage.getItem("vertikalkraft_db") || "[]");
+            let db = JSON.parse(localStorage.getItem("vertikal_roald_db") || "[]");
             if(db.length === 0) return alert("Ingen lagrede data funnet i loggen.");
 
             let wb = XLSX.utils.book_new();
-            let headers = ['Dato', 'Kontrollør', 'Netteier', 'LinjeID', 'Mast nr', 'Mast type', 'Fase nr', 'Kjente krefter (kg)', 'Vinkel θ (°)', 'Beregnet Vertikalkraft (kg)'];
+            let headers = ['Dato', 'Kontrollør', 'Netteier', 'LinjeID', 'Mast nr', 'Mast type', 'Linetype', 'Metode Brukt', 'Vertikalkraft (kN)', 'Vertikalkraft (kg)'];
             let rader = [headers];
-            db.forEach(r => { rader.push([r.dato, r.kontrollor, r.netteier, r.linje, String(r.mast), r.mast_type, r.fase_nr, r.kjente_krefter_kg, r.vinkel_theta, r.vertikalkraft_kg]); });
+            db.forEach(r => { rader.push([r.dato, r.kontrollor, r.netteier, r.linje, String(r.mast), r.mast_type, r.linetype, r.metode, r.beregnet_kn, r.beregnet_kg]); });
             let ws = XLSX.utils.aoa_to_sheet(rader);
-            XLSX.utils.book_append_sheet(wb, ws, "VertikalkraftLogg");
-            XLSX.writeFile(wb, "Vertikalkraft_Beregninger.xlsx");
+            XLSX.utils.book_append_sheet(wb, ws, "RoaldLogg");
+            XLSX.writeFile(wb, "Vertikalkraft_Roald.xlsx");
         }
 
         function lagPDF() {
             let mnr = document.getElementById("mast").value || "Uoppgitt";
-            let v = document.getElementById('res-vertikalkraft').innerText;
+            let res_kn = document.getElementById('resKN').innerText;
+            let res_kg = document.getElementById('resKG').innerText;
+            
+            const hm = document.querySelector('input[name="hovedmetode"]:checked').value;
+            let metodeBrukt = hm === 'drone' ? "Droneanalyse (Top-down vinkelavvik)" : "Roaldmetoden (Manuell vinkelavlesing)";
 
             let bildeHtml = "";
-            if (bildeImg.src && punkter.length > 0) {
+            if (hm === 'drone' && droneImg.src && dronePoints.length === 3) {
                 let canvasDataUrl = canvas.toDataURL("image/png");
-                bildeHtml = `<img src="${canvasDataUrl}" class="print-img" alt="Fotodokumentasjon av måling">`;
+                bildeHtml = `<img src="${canvasDataUrl}" class="print-img" alt="Fotodokumentasjon av linestrekk-vinkel">`;
             }
 
             let printSone = document.getElementById("printSone");
             printSone.innerHTML = `
                 <div class="page">
-                    <h2>Mekanisk Tilstandsrapport - Vertikalkraft</h2>
+                    <h2>Mekanisk Tilstandsrapport - Vertikalkraft (Roald)</h2>
                     <p><b>Dato:</b> ${document.getElementById("dato_kontroll").value} | <b>Kontrollør:</b> ${document.getElementById("kontrollor").value || "-"}</p>
                     <p><b>Netteier:</b> ${document.getElementById("netteier").value || "-"} | <b>LinjeID:</b> ${document.getElementById("linje").value || "-"}</p>
                     
                     <table>
                         <tr><th>Mast nr / Type</th><td>Mast ${mnr} (${document.getElementById("mast_type").value})</td></tr>
-                        <tr><th>Registrert Fase</th><td><b>Fase ${document.getElementById("fase_nr").value}</b></td></tr>
-                        <tr><th>Målemetode / Kilde</th><td>Dronebilde-analyse (vinkel θ)</td></tr>
-                        <tr><th>Registrert vinkel θ (Theta)</th><td><b>${maaltVinkelDeg > 0 ? maaltVinkelDeg.toFixed(1) + "°" : "-"}</b></td></tr>
-                        <tr><th>Angitte kjente krefter (H+V)</th><td>${document.getElementById('krefter_kg').value} kg</td></tr>
-                        <tr class="resultat-rad"><th>BEREGNET VERTIKALKRAFT (kg)</th><td><b>${v}</b></td></tr>
+                        <tr><th>Linetype</th><td>${document.getElementById("linetype").options[document.getElementById("linetype").selectedIndex].text}</td></tr>
+                        <tr><th>Målemetode</th><td>${metodeBrukt}</td></tr>
+                        <tr class="resultat-rad"><th>DIMENSJONERENDE KRAFT</th><td><b>${res_kn} (${res_kg})</b></td></tr>
                     </table>
 
                     ${bildeHtml}
 
                     <p style="margin-top:20px; font-size:12px; color:#475569; font-style:italic;">
-                        💡 <b>Mekanisk analyse:</b> Vertikalkraften er beregnet ved å dekomponere det totale kraftbildet (angitt i H+V) i bæremasten, ved å bruke den visuelt målte vinkelen θ for isolatorkjedet (F=N*cos(θ)). Bildet viser målepunktene som ligger til grunn for vinkelberegningen.
+                        💡 <b>Mekanisk analyse:</b> Vertikalkraften er beregnet basert på linas mekaniske strekkraft (R3) og det registrerte vinkelavviket i masta. Beregningen forutsetter at lina henger i fritt spenn og er trukket opp til forskriftsmessig pil.
                     </p>
                 </div>
             `;
             setTimeout(() => { window.print(); }, 300);
-        }
-
-        function nesteMast() {
-            document.getElementById("mast").value = "";
-            document.getElementById("fase_nr").value = "1";
-            nullstillMaaling(); window.scrollTo(0,0);
         }
     </script>
 </body>

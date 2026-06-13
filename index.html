@@ -38,6 +38,8 @@
 
         <main class="bg-white p-4 rounded-b-xl shadow-md border-x border-b border-slate-200 space-y-5">
             
+            <img src="DITT_BILDE_HER.jpg" class="w-full h-auto rounded-lg shadow-md border border-slate-200" alt="Vertikalkraft illustrasjon" onerror="this.style.display='none'">
+            
             <section class="space-y-3 bg-slate-50 p-3 rounded-lg border border-slate-200">
                 <h3 class="text-xs font-black uppercase text-sky-900 border-b border-slate-200 pb-1">📋 Grunnlagsdata</h3>
                 
@@ -252,6 +254,8 @@
             </section>
 
             <section class="space-y-2 pt-4 border-t border-slate-200">
+                <button type="button" onclick="nullstillForNesteMast()" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-700 border border-slate-300 font-black p-3 rounded-xl text-xs shadow transition-colors mb-2">🔄 NULLSTILL FOR NESTE MAST</button>
+                
                 <button type="button" onclick="lagreTilLogg()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-black p-4 rounded-xl text-sm shadow transition-colors">💾 LAGRE I LOGG</button>
                 <div class="grid grid-cols-2 gap-2">
                     <button type="button" onclick="lastExcel()" class="bg-blue-700 hover:bg-blue-800 text-white font-bold p-3 rounded-xl text-xs shadow transition-colors">📊 LAST NED EXCEL</button>
@@ -530,6 +534,39 @@
             resKN.innerText = vertikalKraft.toFixed(2) + " kN";
             resKG.innerText = "~ " + Math.round(vertikalKG) + " kg trykk i masta";
             panel.className = "p-4 rounded-lg bg-sky-100 border-2 border-sky-400 text-center space-y-1 shadow-sm transition-colors duration-300";
+        }
+
+        // Funksjon for å nullstille skjema for neste mast
+        function nullstillForNesteMast() {
+            if(confirm("Vil du tømme skjemaet for ny måling?\n\nNetteier, LinjeID og Kontrollør beholdes.")) {
+                // Tømmer mastinfo
+                document.getElementById('mast').value = "";
+                document.getElementById('mast_type').selectedIndex = 0;
+
+                // Tømmer linetype
+                document.getElementById('linetype').selectedIndex = 0;
+                document.getElementById('custom_r3').value = "";
+                document.getElementById('custom-r3-div').classList.add('hidden');
+
+                // Tømmer Manuelle/Roald-mål
+                document.getElementById('vinkel_input').value = "";
+                document.getElementById('maalt_D').value = "";
+                document.getElementById('maalt_S3').value = "15";
+
+                // Tømmer Drone-visningen
+                document.getElementById('drone-file').value = "";
+                droneImg = new Image(); // Resetter bildet i minnet
+                ctx.clearRect(0, 0, canvas.width, canvas.height); // Vasker tavla ren
+                document.getElementById('bilde-verktøy').classList.add('hidden');
+                document.getElementById('status-boks').classList.add('hidden');
+                nullstillDroneKlikk();
+
+                // Tvinger kalkulatoren til å oppdatere og vise 0.00
+                kalkulerVertikal();
+
+                // Scroller elegant tilbake til toppen av skjermen
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
         }
 
         // DATABASE, PDF, EXCEL
